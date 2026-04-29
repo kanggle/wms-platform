@@ -119,8 +119,8 @@ tasks.register('e2eTest', Test) {
 
     // Ensure both bootJars are produced before the containerized tests spin
     // up — Testcontainers'  ImageFromDockerfile COPYs build/libs/*.jar.
-    dependsOn ':projects:wms-platform:apps:gateway-service:bootJar'
-    dependsOn ':projects:wms-platform:apps:master-service:bootJar'
+    dependsOn ':apps:gateway-service:bootJar'
+    dependsOn ':apps:master-service:bootJar'
 
     // Propagate environment where needed (e.g. DOCKER_HOST overrides for
     // WSL2 / colima setups).

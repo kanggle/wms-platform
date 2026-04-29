@@ -1,4 +1,4 @@
-rootProject.name = 'monorepo-lab'
+rootProject.name = 'wms-platform'
 
 // Shared libraries (at repo root)
 include(
@@ -12,14 +12,14 @@ include(
 
 // Project: wms-platform
 include(
-    'projects:wms-platform:apps:gateway-service',
-    'projects:wms-platform:apps:inbound-service',
-    'projects:wms-platform:apps:inventory-service',
-    'projects:wms-platform:apps:outbound-service',
-    'projects:wms-platform:apps:master-service',
-    'projects:wms-platform:apps:notification-service',
-    'projects:wms-platform:apps:admin-service',
-    'projects:wms-platform:tests:e2e'
+    'apps:gateway-service',
+    'apps:inbound-service',
+    'apps:inventory-service',
+    'apps:outbound-service',
+    'apps:master-service',
+    'apps:notification-service',
+    'apps:admin-service',
+    'tests:e2e'
 )
 
 // Project: ecommerce-microservices-platform

@@ -58,13 +58,13 @@ jobs:
           :libs:java-security:check
           :libs:java-test-support:check
           :libs:java-web:check
-          :projects:wms-platform:apps:gateway-service:check
-          :projects:wms-platform:apps:inbound-service:check
-          :projects:wms-platform:apps:inventory-service:check
-          :projects:wms-platform:apps:outbound-service:check
-          :projects:wms-platform:apps:master-service:check
-          :projects:wms-platform:apps:notification-service:check
-          :projects:wms-platform:apps:admin-service:check
+          :apps:gateway-service:check
+          :apps:inbound-service:check
+          :apps:inventory-service:check
+          :apps:outbound-service:check
+          :apps:master-service:check
+          :apps:notification-service:check
+          :apps:admin-service:check
           :projects:ecommerce-microservices-platform:apps:auth-service:check
           :projects:ecommerce-microservices-platform:apps:batch-worker:check
           :projects:ecommerce-microservices-platform:apps:gateway-service:check
@@ -111,8 +111,8 @@ jobs:
       - name: Build boot jars
         run: >-
           ./gradlew
-          :projects:wms-platform:apps:master-service:bootJar
-          :projects:wms-platform:apps:gateway-service:bootJar
+          :apps:master-service:bootJar
+          :apps:gateway-service:bootJar
           --no-daemon
 
       - name: Upload jars
@@ -120,8 +120,8 @@ jobs:
         with:
           name: wms-boot-jars
           path: |
-            projects/wms-platform/apps/master-service/build/libs/master-service.jar
-            projects/wms-platform/apps/gateway-service/build/libs/gateway-service.jar
+            apps/master-service/build/libs/master-service.jar
+            apps/gateway-service/build/libs/gateway-service.jar
           retention-days: 7
 
   ecommerce-boot-jars:
@@ -297,7 +297,7 @@ jobs:
       - name: Run master-service integration suite
         run: >-
           ./gradlew
-          :projects:wms-platform:apps:master-service:integrationTest
+          :apps:master-service:integrationTest
           --no-daemon --stacktrace
 
       - name: Upload integration test reports on failure
@@ -306,8 +306,8 @@ jobs:
         with:
           name: integration-test-reports
           path: |
-            projects/wms-platform/apps/master-service/build/reports/tests/integrationTest/
-            projects/wms-platform/apps/master-service/build/test-results/integrationTest/
+            apps/master-service/build/reports/tests/integrationTest/
+            apps/master-service/build/test-results/integrationTest/
           retention-days: 7
 
   frontend-checks:
@@ -520,18 +520,18 @@ jobs:
         # multiple paths are uploaded, so the wms-boot-jars artifact contains
         # `master-service/build/libs/master-service.jar` and
         # `gateway-service/build/libs/gateway-service.jar` (with the
-        # `projects/wms-platform/apps/` prefix removed). The e2e harness's
+        # `apps/` prefix removed). The e2e harness's
         # locateFile() in E2EBase.java expects the original
         # `apps/<service>/build/libs/<service>.jar` layout when resolving
         # paths from gateway-service's project directory, so move the
         # jars back to their canonical locations before invoking Gradle.
         run: |
-          mkdir -p projects/wms-platform/apps/master-service/build/libs/
-          mkdir -p projects/wms-platform/apps/gateway-service/build/libs/
+          mkdir -p apps/master-service/build/libs/
+          mkdir -p apps/gateway-service/build/libs/
           mv artifact-staging/master-service/build/libs/master-service.jar \
-             projects/wms-platform/apps/master-service/build/libs/master-service.jar
+             apps/master-service/build/libs/master-service.jar
           mv artifact-staging/gateway-service/build/libs/gateway-service.jar \
-             projects/wms-platform/apps/gateway-service/build/libs/gateway-service.jar
+             apps/gateway-service/build/libs/gateway-service.jar
 
       - name: Verify Docker (Testcontainers prerequisite)
         run: docker info
@@ -546,18 +546,18 @@ jobs:
         # E2EBase.java skip ImageFromDockerfile and use GenericContainer directly.
         run: |
           docker build -t wms-master-service:e2e \
-            -f projects/wms-platform/apps/master-service/Dockerfile \
-            projects/wms-platform/apps/master-service/
+            -f apps/master-service/Dockerfile \
+            apps/master-service/
           docker build -t wms-gateway-service:e2e \
-            -f projects/wms-platform/apps/gateway-service/Dockerfile \
-            projects/wms-platform/apps/gateway-service/
+            -f apps/gateway-service/Dockerfile \
+            apps/gateway-service/
 
       - name: Run gateway-master e2e suite
         run: >-
           ./gradlew
-          :projects:wms-platform:apps:gateway-service:e2eTest
-          -x :projects:wms-platform:apps:master-service:bootJar
-          -x :projects:wms-platform:apps:gateway-service:bootJar
+          :apps:gateway-service:e2eTest
+          -x :apps:master-service:bootJar
+          -x :apps:gateway-service:bootJar
           -Dwms.e2e.masterImage=wms-master-service:e2e
           -Dwms.e2e.gatewayImage=wms-gateway-service:e2e
           --no-daemon --stacktrace
@@ -568,6 +568,6 @@ jobs:
         with:
           name: e2e-test-reports
           path: |
-            projects/wms-platform/apps/gateway-service/build/reports/tests/e2eTest/
-            projects/wms-platform/apps/gateway-service/build/test-results/e2eTest/
+            apps/gateway-service/build/reports/tests/e2eTest/
+            apps/gateway-service/build/test-results/e2eTest/
           retention-days: 7
