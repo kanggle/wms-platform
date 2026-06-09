@@ -86,8 +86,8 @@ jobs:
           :projects:iam-platform:apps:account-service:bootJar
           :projects:iam-platform:apps:admin-service:bootJar
           :projects:finance-platform:apps:account-service:bootJar
-          :projects:wms-platform:apps:master-service:bootJar
-          :projects:wms-platform:apps:admin-service:bootJar
+          :apps:master-service:bootJar
+          :apps:admin-service:bootJar
           :projects:scm-platform:apps:procurement-service:bootJar
           :projects:scm-platform:apps:inventory-visibility-service:bootJar
           :projects:erp-platform:apps:masterdata-service:bootJar
@@ -106,8 +106,8 @@ jobs:
             projects/iam-platform/apps/account-service/build/libs/account-service.jar
             projects/iam-platform/apps/admin-service/build/libs/admin-service.jar
             projects/finance-platform/apps/account-service/build/libs/account-service.jar
-            projects/wms-platform/apps/master-service/build/libs/master-service.jar
-            projects/wms-platform/apps/admin-service/build/libs/admin-service.jar
+            apps/master-service/build/libs/master-service.jar
+            apps/admin-service/build/libs/admin-service.jar
             projects/scm-platform/apps/procurement-service/build/libs/procurement-service.jar
             projects/scm-platform/apps/inventory-visibility-service/build/libs/inventory-visibility-service.jar
             projects/erp-platform/apps/masterdata-service/build/libs/masterdata-service.jar
@@ -177,12 +177,12 @@ jobs:
              projects/finance-platform/apps/account-service/build/libs/account-service.jar
 
           # wms-platform (master-service + admin-service — TASK-MONO-162)
-          mkdir -p projects/wms-platform/apps/master-service/build/libs/
+          mkdir -p apps/master-service/build/libs/
           mv artifact-staging/wms-platform/apps/master-service/build/libs/master-service.jar \
-             projects/wms-platform/apps/master-service/build/libs/master-service.jar
-          mkdir -p projects/wms-platform/apps/admin-service/build/libs/
+             apps/master-service/build/libs/master-service.jar
+          mkdir -p apps/admin-service/build/libs/
           mv artifact-staging/wms-platform/apps/admin-service/build/libs/admin-service.jar \
-             projects/wms-platform/apps/admin-service/build/libs/admin-service.jar
+             apps/admin-service/build/libs/admin-service.jar
 
           # scm-platform (procurement-service + inventory-visibility-service — TASK-MONO-162)
           mkdir -p projects/scm-platform/apps/procurement-service/build/libs/

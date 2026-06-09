@@ -36,7 +36,7 @@ jobs:
   #              → activates ALL downstream jobs (cross-project impact)
   #   workflows  .github/workflows/
   #              → activates ALL downstream jobs (CI self-change safety)
-  #   wms        projects/wms-platform/**
+  #   wms        **
   #   ecommerce  projects/ecommerce-microservices-platform/**
   #   iam        projects/iam-platform/**
   #   fan        projects/fan-platform/**
@@ -57,7 +57,7 @@ jobs:
   #   Under the default `predicate-quantifier: 'some'`, a negation pattern
   #   (`!...`) is treated as "file matches iff it does NOT match the inner
   #   glob". For a markdown-only PR, file `tasks/INDEX.md` therefore satisfies
-  #   `!projects/wms-platform/**/*.md` (file is NOT under wms-platform) → the
+  #   `!**/*.md` (file is NOT under wms-platform) → the
   #   pattern counts as matched → `wms` filter = true even though no positive
   #   matched. This is documented behavior (README: "filters below will match
   #   markdown files despite the exclusion syntax UNLESS you specify 'every'").
@@ -112,7 +112,7 @@ jobs:
       # TASK-MONO-075: dorny/paths-filter@v3 default `predicate-quantifier: 'some'`
       # treats negation patterns (`!...`) as "file is matched if it satisfies the
       # negation" — i.e. a markdown-only PR with no positive match still produces
-      # `wms = true` because the `!projects/wms-platform/**/*.md` negation is
+      # `wms = true` because the `!**/*.md` negation is
       # satisfied (file is NOT under that glob). See ADR-MONO-... or the README
       # quote: "The filters below will match markdown files despite the exclusion
       # syntax UNLESS you specify 'every' as the predicate-quantifier parameter."
@@ -159,9 +159,9 @@ jobs:
             workflows:
               - '.github/workflows/**'
             wms:
-              - 'projects/wms-platform/**'
-              - '!projects/wms-platform/tasks/**'
-              - '!projects/wms-platform/**/*.md'
+              - '**'
+              - '!tasks/**'
+              - '!**/*.md'
             ecommerce:
               - 'projects/ecommerce-microservices-platform/**'
               - '!projects/ecommerce-microservices-platform/tasks/**'
@@ -292,13 +292,13 @@ jobs:
           :libs:java-security:check
           :libs:java-test-support:check
           :libs:java-web:check
-          :projects:wms-platform:apps:gateway-service:check
-          :projects:wms-platform:apps:inbound-service:check
-          :projects:wms-platform:apps:inventory-service:check
-          :projects:wms-platform:apps:outbound-service:check
-          :projects:wms-platform:apps:master-service:check
-          :projects:wms-platform:apps:notification-service:check
-          :projects:wms-platform:apps:admin-service:check
+          :apps:gateway-service:check
+          :apps:inbound-service:check
+          :apps:inventory-service:check
+          :apps:outbound-service:check
+          :apps:master-service:check
+          :apps:notification-service:check
+          :apps:admin-service:check
           :projects:ecommerce-microservices-platform:apps:batch-worker:check
           :projects:ecommerce-microservices-platform:apps:gateway-service:check
           :projects:ecommerce-microservices-platform:apps:notification-service:check
@@ -436,10 +436,10 @@ jobs:
       - name: Build boot jars
         run: >-
           ./gradlew
-          :projects:wms-platform:apps:master-service:bootJar
-          :projects:wms-platform:apps:gateway-service:bootJar
-          :projects:wms-platform:apps:notification-service:bootJar
-          :projects:wms-platform:apps:admin-service:bootJar
+          :apps:master-service:bootJar
+          :apps:gateway-service:bootJar
+          :apps:notification-service:bootJar
+          :apps:admin-service:bootJar
           --no-daemon
 
       - name: Upload jars
@@ -447,10 +447,10 @@ jobs:
         with:
           name: wms-boot-jars
           path: |
-            projects/wms-platform/apps/master-service/build/libs/master-service.jar
-            projects/wms-platform/apps/gateway-service/build/libs/gateway-service.jar
-            projects/wms-platform/apps/notification-service/build/libs/notification-service.jar
-            projects/wms-platform/apps/admin-service/build/libs/admin-service.jar
+            apps/master-service/build/libs/master-service.jar
+            apps/gateway-service/build/libs/gateway-service.jar
+            apps/notification-service/build/libs/notification-service.jar
+            apps/admin-service/build/libs/admin-service.jar
           retention-days: 7
 
   ecommerce-boot-jars:
@@ -847,10 +847,10 @@ jobs:
         # is Docker-gated, not unit-only.
         run: >-
           ./gradlew
-          :projects:wms-platform:apps:master-service:integrationTest
-          :projects:wms-platform:apps:notification-service:integrationTest
-          :projects:wms-platform:apps:admin-service:integrationTest
-          :projects:wms-platform:apps:outbound-service:integrationTest
+          :apps:master-service:integrationTest
+          :apps:notification-service:integrationTest
+          :apps:admin-service:integrationTest
+          :apps:outbound-service:integrationTest
           --no-daemon --stacktrace
 
       - name: Upload integration test reports on failure
@@ -859,14 +859,14 @@ jobs:
         with:
           name: integration-test-reports
           path: |
-            projects/wms-platform/apps/master-service/build/reports/tests/integrationTest/
-            projects/wms-platform/apps/master-service/build/test-results/integrationTest/
-            projects/wms-platform/apps/notification-service/build/reports/tests/integrationTest/
-            projects/wms-platform/apps/notification-service/build/test-results/integrationTest/
-            projects/wms-platform/apps/admin-service/build/reports/tests/integrationTest/
-            projects/wms-platform/apps/admin-service/build/test-results/integrationTest/
-            projects/wms-platform/apps/outbound-service/build/reports/tests/integrationTest/
-            projects/wms-platform/apps/outbound-service/build/test-results/integrationTest/
+            apps/master-service/build/reports/tests/integrationTest/
+            apps/master-service/build/test-results/integrationTest/
+            apps/notification-service/build/reports/tests/integrationTest/
+            apps/notification-service/build/test-results/integrationTest/
+            apps/admin-service/build/reports/tests/integrationTest/
+            apps/admin-service/build/test-results/integrationTest/
+            apps/outbound-service/build/reports/tests/integrationTest/
+            apps/outbound-service/build/test-results/integrationTest/
           retention-days: 7
 
   iam-integration-tests:
@@ -1379,18 +1379,18 @@ jobs:
         # multiple paths are uploaded, so the wms-boot-jars artifact contains
         # `master-service/build/libs/master-service.jar` and
         # `gateway-service/build/libs/gateway-service.jar` (with the
-        # `projects/wms-platform/apps/` prefix removed). The e2e harness's
+        # `apps/` prefix removed). The e2e harness's
         # locateFile() in E2EBase.java expects the original
         # `apps/<service>/build/libs/<service>.jar` layout when resolving
         # paths from gateway-service's project directory, so move the
         # jars back to their canonical locations before invoking Gradle.
         run: |
-          mkdir -p projects/wms-platform/apps/master-service/build/libs/
-          mkdir -p projects/wms-platform/apps/gateway-service/build/libs/
+          mkdir -p apps/master-service/build/libs/
+          mkdir -p apps/gateway-service/build/libs/
           mv artifact-staging/master-service/build/libs/master-service.jar \
-             projects/wms-platform/apps/master-service/build/libs/master-service.jar
+             apps/master-service/build/libs/master-service.jar
           mv artifact-staging/gateway-service/build/libs/gateway-service.jar \
-             projects/wms-platform/apps/gateway-service/build/libs/gateway-service.jar
+             apps/gateway-service/build/libs/gateway-service.jar
 
       - name: Verify Docker (Testcontainers prerequisite)
         run: docker info
@@ -1405,11 +1405,11 @@ jobs:
         # E2EBase.java skip ImageFromDockerfile and use GenericContainer directly.
         run: |
           docker build -t wms-master-service:e2e \
-            -f projects/wms-platform/apps/master-service/Dockerfile \
-            projects/wms-platform/apps/master-service/
+            -f apps/master-service/Dockerfile \
+            apps/master-service/
           docker build -t wms-gateway-service:e2e \
-            -f projects/wms-platform/apps/gateway-service/Dockerfile \
-            projects/wms-platform/apps/gateway-service/
+            -f apps/gateway-service/Dockerfile \
+            apps/gateway-service/
 
       - name: Run gateway-master e2e smoke suite
         # ADR-MONO-010 D3 — PR-time runs the @Tag("smoke") subset only via
@@ -1419,9 +1419,9 @@ jobs:
         # dev convenience.
         run: >-
           ./gradlew
-          :projects:wms-platform:apps:gateway-service:e2eSmokeTest
-          -x :projects:wms-platform:apps:master-service:bootJar
-          -x :projects:wms-platform:apps:gateway-service:bootJar
+          :apps:gateway-service:e2eSmokeTest
+          -x :apps:master-service:bootJar
+          -x :apps:gateway-service:bootJar
           -Dwms.e2e.masterImage=wms-master-service:e2e
           -Dwms.e2e.gatewayImage=wms-gateway-service:e2e
           --no-daemon --stacktrace
@@ -1432,8 +1432,8 @@ jobs:
         with:
           name: e2e-test-reports
           path: |
-            projects/wms-platform/apps/gateway-service/build/reports/tests/e2eSmokeTest/
-            projects/wms-platform/apps/gateway-service/build/test-results/e2eSmokeTest/
+            apps/gateway-service/build/reports/tests/e2eSmokeTest/
+            apps/gateway-service/build/test-results/e2eSmokeTest/
           retention-days: 7
 
   fan-platform-e2e:

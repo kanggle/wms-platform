@@ -359,8 +359,8 @@ jobs:
       - name: Build wms boot jars
         run: >-
           ./gradlew
-          :projects:wms-platform:apps:master-service:bootJar
-          :projects:wms-platform:apps:gateway-service:bootJar
+          :apps:master-service:bootJar
+          :apps:gateway-service:bootJar
           --no-daemon --stacktrace
 
       - name: Verify Docker (Testcontainers prerequisite)
@@ -372,18 +372,18 @@ jobs:
         # 2026-05-05-ci-regression.md § Root Cause #2, TASK-MONO-044).
         run: |
           docker build -t wms-master-service:e2e \
-            -f projects/wms-platform/apps/master-service/Dockerfile \
-            projects/wms-platform/apps/master-service/
+            -f apps/master-service/Dockerfile \
+            apps/master-service/
           docker build -t wms-gateway-service:e2e \
-            -f projects/wms-platform/apps/gateway-service/Dockerfile \
-            projects/wms-platform/apps/gateway-service/
+            -f apps/gateway-service/Dockerfile \
+            apps/gateway-service/
 
       - name: Run gateway-master e2e full suite
         run: >-
           ./gradlew
-          :projects:wms-platform:apps:gateway-service:e2eFullTest
-          -x :projects:wms-platform:apps:master-service:bootJar
-          -x :projects:wms-platform:apps:gateway-service:bootJar
+          :apps:gateway-service:e2eFullTest
+          -x :apps:master-service:bootJar
+          -x :apps:gateway-service:bootJar
           -Dwms.e2e.masterImage=wms-master-service:e2e
           -Dwms.e2e.gatewayImage=wms-gateway-service:e2e
           --no-daemon --stacktrace
@@ -394,8 +394,8 @@ jobs:
         with:
           name: wms-e2e-full-test-reports-nightly
           path: |
-            projects/wms-platform/apps/gateway-service/build/reports/tests/e2eFullTest/
-            projects/wms-platform/apps/gateway-service/build/test-results/e2eFullTest/
+            apps/gateway-service/build/reports/tests/e2eFullTest/
+            apps/gateway-service/build/test-results/e2eFullTest/
           retention-days: 7
 
   fan-platform-e2e-full:
